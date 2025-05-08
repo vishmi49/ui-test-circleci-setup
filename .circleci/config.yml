@@ -37,7 +37,7 @@ jobs:
             google-chrome --version
 
       - run:
-          name: Run Cypress tests in Chrome
+          name: Run Cypress tests in Chrome browser
           command: npm run test:cci
           when: always
 
