@@ -43,7 +43,7 @@ jobs:
             /usr/bin/time -v npm run test --browser chrome --reporter mochawesome --reporter-options reportDir=cypress/results 2> cypress/results/cpu_usage.txt || echo "⚠️ Tests failed"
 
       - run:
-          name: Merge Mochawesome report
+          name: Merge Mochawesome reports
           command: |
             npx mochawesome-merge cypress/results/*.json > cypress/results/merged-reports.json || echo "⚠️ No reports to merge"
 
