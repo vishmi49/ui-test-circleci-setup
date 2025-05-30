@@ -40,7 +40,7 @@ jobs:
           name: Run Cypress tests with CPU usage logging
           command: |
             mkdir -p cypress/results
-            /usr/bin/time -v npm run test:cci --browser chrome --reporter mochawesome --reporter-options reportDir=cypress/results 2> cypress/results/cpu_usage.txt || echo "⚠️ Tests failed"
+            /usr/bin/time -v npm run test --browser chrome --reporter mochawesome --reporter-options reportDir=cypress/results 2> cypress/results/cpu_usage.txt || echo "⚠️ Tests failed"
 
       - run:
           name: Merge Mochawesome report
