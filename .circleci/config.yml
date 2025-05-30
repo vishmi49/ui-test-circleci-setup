@@ -42,7 +42,7 @@ jobs:
           when: always
 
       - run:
-          name: Merge Mochawesome reports
+          name: Merge Mochawesome report
           command: |
             mkdir -p cypress/results
             npx mochawesome-merge cypress/results/*.json > cypress/results/merged-reports.json || echo "No reports to merge."
