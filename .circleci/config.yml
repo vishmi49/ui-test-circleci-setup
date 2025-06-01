@@ -9,7 +9,7 @@ executors:
 jobs:
   cypress-tests:
     executor: node-executor
-    parallelism: 3 # You can change this number as needed
+    parallelism: 3
     steps:
       - checkout
 
@@ -38,21 +38,21 @@ jobs:
             google-chrome --version
 
       - run:
-    name: Run selected Cypress specs with CPU logging
-    command: |
-      mkdir -p cypress/results
-      TEST_FILES=$(circleci tests glob "cypress/e2e/**/**/*.spec.js" | circleci tests split --split-by=timings)
-      echo "Running test files:"
-      echo "$TEST_FILES"
-      # Convert space-separated list to comma-separated for Cypress
-      SPECS=$(echo "$TEST_FILES" | paste -sd "," -)
-      /usr/bin/time -v npx cypress run \
-        --browser chrome \
-        --reporter mochawesome \
-        --reporter-options reportDir=cypress/results,overwrite=false,html=false,json=true \
-        --spec "$SPECS" \
-        2> cypress/results/cpu_usage_${CIRCLE_NODE_INDEX}.txt || echo "⚠️ Tests failed"
-
+          name: Run selected Cypress specs with CPU logging
+          command: |
+            mkdir -p cypress/results
+            TEST_FILES=$(circleci tests glob "cypress/e2e/**/*.spec.js" | circleci tests split --split-by=timings)
+            echo "Running test files on node $CIRCLE_NODE_INDEX:"
+            echo "$TEST_FILES"
+            for spec in $TEST_FILES; do
+              echo "Running $spec"
+              /usr/bin/time -v npx cypress run \
+                --browser chrome \
+                --reporter mochawesome \
+                --reporter-options "reportDir=cypress/results,overwrite=false,html=false,json=true" \
+                --spec "$spec" \
+                2> "cypress/results/cpu_usage_${CIRCLE_NODE_INDEX}_${spec##*/}.txt" || echo "⚠️ Cypress test failed: $spec"
+            done
 
       - run:
           name: Merge Mochawesome report
@@ -63,7 +63,9 @@ jobs:
           name: Generate HTML report
           when: always
           command: |
-            npx mochawesome-report-generator cypress/results/merged-reports.json --reportDir cypress/results --reportFilename test-report.html
+            npx mochawesome-report-generator cypress/results/merged-reports.json \
+              --reportDir cypress/results \
+              --reportFilename test-report.html
 
       - store_artifacts:
           path: cypress/results
