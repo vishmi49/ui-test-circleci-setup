@@ -38,13 +38,21 @@ jobs:
             google-chrome --version
 
       - run:
-          name: Run selected Cypress specs with CPU logging
-          command: |
-            mkdir -p cypress/results
-            TEST_FILES=$(circleci tests glob "cypress/e2e/**/**/*.spec.js" | circleci tests split --split-by=timings)
-            echo "Running test files:"
-            echo "$TEST_FILES"
-            /usr/bin/time -v npx cypress run --browser chrome --reporter mochawesome --reporter-options reportDir=cypress/results,overwrite=false,html=false,json=true --spec "$TEST_FILES" 2> cypress/results/cpu_usage_$(echo $CIRCLE_NODE_INDEX).txt || echo "⚠️ Tests failed"
+    name: Run selected Cypress specs with CPU logging
+    command: |
+      mkdir -p cypress/results
+      TEST_FILES=$(circleci tests glob "cypress/e2e/**/**/*.spec.js" | circleci tests split --split-by=timings)
+      echo "Running test files:"
+      echo "$TEST_FILES"
+      # Convert space-separated list to comma-separated for Cypress
+      SPECS=$(echo "$TEST_FILES" | paste -sd "," -)
+      /usr/bin/time -v npx cypress run \
+        --browser chrome \
+        --reporter mochawesome \
+        --reporter-options reportDir=cypress/results,overwrite=false,html=false,json=true \
+        --spec "$SPECS" \
+        2> cypress/results/cpu_usage_${CIRCLE_NODE_INDEX}.txt || echo "⚠️ Tests failed"
+
 
       - run:
           name: Merge Mochawesome report
