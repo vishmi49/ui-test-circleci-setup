@@ -55,7 +55,7 @@ jobs:
             done
 
       - run:
-          name: Merge Mochawesome reports
+          name: Merge Mochawesome report
           command: |
             npx mochawesome-merge cypress/results/*.json > cypress/results/merged-reports.json || echo "⚠️ No reports to merge"
 
