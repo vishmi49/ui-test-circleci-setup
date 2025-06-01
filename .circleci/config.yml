@@ -38,7 +38,7 @@ jobs:
             google-chrome --version
 
       - run:
-          name: Run selected Cypress specs with CPU logging
+          name: Run selected Cypress specs with CPU loggings
           command: |
             mkdir -p cypress/results
             TEST_FILES=$(circleci tests glob "cypress/e2e/**/*.spec.js" | circleci tests split --split-by=timings)
@@ -55,7 +55,7 @@ jobs:
             done
 
       - run:
-          name: Merge Mochawesome report
+          name: Merge Mochawesome reports
           command: |
             npx mochawesome-merge cypress/results/*.json > cypress/results/merged-reports.json || echo "⚠️ No reports to merge"
 
