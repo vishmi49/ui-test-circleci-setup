@@ -38,7 +38,7 @@ jobs:
             google-chrome --version
 
       - run:
-          name: Run selected Cypress specs with CPU logging
+          name: Run selected Cypress specs with CPU loggings
           command: |
             mkdir -p cypress/results
             TEST_FILES=$(circleci tests glob "cypress/e2e/**/*.spec.js" | circleci tests split --split-by=timings)
