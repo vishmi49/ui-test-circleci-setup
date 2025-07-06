@@ -60,7 +60,7 @@ jobs:
             npx mochawesome-merge cypress/results/*.json > cypress/results/merged-reports.json || echo "⚠️ No reports to merge"
 
       - run:
-          name: Generate HTML report
+          name: Generate HTML reports
           when: always
           command: |
             npx mochawesome-report-generator cypress/results/merged-reports.json \
